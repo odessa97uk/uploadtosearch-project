@@ -20,15 +20,14 @@ Resources:
 
       Events:
         PdfUploadEvent:
-          Type: S3
+          Type: EventBridgeRule
           Properties:
-            Bucket: pdf-input-bkt
-            Events:
-              - s3:ObjectCreated:Put
-            Filter:
-              S3Key:
-                Rules:
-                  - Name: prefix
-                    Value: output/
-                  - Name: suffix
-                    Value: .txt
+            Pattern:
+              source:
+                - aws.s3
+              detail-type:
+                - Object Created
+              detail:
+                bucket:
+                  name:
+                    - pdf-input-bkt
