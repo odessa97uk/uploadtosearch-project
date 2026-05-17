@@ -1,9 +1,11 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Transform: 'AWS::Serverless-2016-10-31'
+Transform: AWS::Serverless-2016-10-31
 Description: An AWS Serverless Specification template describing your function.
+
 Resources:
+
   uploadtosearch:
-    Type: 'AWS::Serverless::Function'
+    Type: AWS::Serverless::Function
     Properties:
       Handler: lambda_function.handler
       Runtime: python3.12
@@ -11,5 +13,22 @@ Resources:
       Description: ''
       MemorySize: 512
       Timeout: 900
-      Role: 'arn:aws:iam::544471418261:role/opensearch-lambda-role'
+      Role: arn:aws:iam::544471418261:role/opensearch-lambda-role
 
+      Layers:
+        - arn:aws:lambda:us-east-2:544471418261:layer:requests-layer:2
+
+      Events:
+        PdfUploadEvent:
+          Type: S3
+          Properties:
+            Bucket: pdf-input-bkt
+            Events:
+              - s3:ObjectCreated:Put
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: prefix
+                    Value: output/
+                  - Name: suffix
+                    Value: .txt
