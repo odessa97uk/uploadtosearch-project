@@ -1,8 +1,13 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: An AWS Serverless Specification template describing your function.
+Description: Lambda with S3 trigger
 
 Resources:
+
+  PdfBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: pdf-input-bkt   
 
   uploadtosearch:
     Type: AWS::Serverless::Function
@@ -10,7 +15,6 @@ Resources:
       Handler: lambda_function.handler
       Runtime: python3.12
       CodeUri: .
-      Description: ''
       MemorySize: 512
       Timeout: 900
       Role: arn:aws:iam::544471418261:role/opensearch-lambda-role
@@ -20,14 +24,15 @@ Resources:
 
       Events:
         PdfUploadEvent:
-          Type: EventBridgeRule
+          Type: S3
           Properties:
-            Pattern:
-              source:
-                - aws.s3
-              detail-type:
-                - Object Created
-              detail:
-                bucket:
-                  name:
-                    - pdf-input-bkt
+            Bucket: !Ref PdfBucket
+            Events:
+              - s3:ObjectCreated:Put
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: prefix
+                    Value: output/
+                  - Name: suffix
+                    Value: .txt
