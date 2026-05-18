@@ -12,7 +12,7 @@ Resources:
       NotificationConfiguration:
         LambdaConfigurations:
           - Event: s3:ObjectCreated:Put
-            Function: !GetAtt fnc_uploadtosearch.Arn
+            Function: !GetAtt uploadtosearch.Arn
             Filter:
               S3Key:
                 Rules:
