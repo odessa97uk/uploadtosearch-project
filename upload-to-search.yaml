@@ -4,13 +4,34 @@ Description: Lambda with S3 trigger
 
 Resources:
 
+  PdfInputBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: pdf-input-bkt
+
   uploadtosearch:
     Type: AWS::Serverless::Function
     Properties:
+      FunctionName: fnc-uploadtosearch
       Handler: lambda_function.handler
       Runtime: python3.12
       CodeUri: .
       MemorySize: 512
       Timeout: 900
       Role: arn:aws:iam::544471418261:role/opensearch-lambda-role
+
+      Events:
+        PdfUploadEvent:
+          Type: S3
+          Properties:
+            Bucket: !Ref PdfInputBucket
+            Events:
+              - s3:ObjectCreated:Put
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: prefix
+                    Value: output/
+                  - Name: suffix
+                    Value: .txt
       
