@@ -6,7 +6,6 @@ Resources:
 
   PdfInputBucket:
     Type: AWS::S3::Bucket
-    DependsOn: UploadToSearchPermission
     Properties:
       BucketName: pdf-input-bkt
       NotificationConfiguration:
@@ -24,7 +23,7 @@ Resources:
   uploadtosearch:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: fnc_uploadtosearch
+      FunctionName: uploadtosearch
       Handler: lambda_function.handler
       Runtime: python3.12
       CodeUri: .
@@ -41,5 +40,5 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !Ref uploadtosearch
       Principal: s3.amazonaws.com
-      SourceArn: !GetAtt PdfInputBucket.Arn
+      SourceArn: arn:aws:s3:::pdf-input-bkt-544471418261
       
