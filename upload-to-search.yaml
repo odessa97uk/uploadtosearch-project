@@ -13,18 +13,4 @@ Resources:
       MemorySize: 512
       Timeout: 900
       Role: arn:aws:iam::544471418261:role/opensearch-lambda-role
-
-      Events:
-        PdfUploadEvent:
-          Type: S3
-          Properties:
-            Bucket: pdf-input-bkt   # existing bucket name
-            Events:
-              - s3:ObjectCreated:Put
-            Filter:
-              S3Key:
-                Rules:
-                  - Name: prefix
-                    Value: output/
-                  - Name: suffix
-                    Value: .txt
+      
